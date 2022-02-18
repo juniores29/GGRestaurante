@@ -22,7 +22,7 @@ const modalTrigger = (productId) => {
       if(produto != null){
         modal.querySelector('#title').value = produto.title
     }
-  }
+  } 
   modal.classList.contains('hide') == true ? modal.classList.remove('hide') : modal.classList.add('hide')
  
 }
@@ -46,5 +46,43 @@ const modalTrigger = (productId) => {
   }
 
 
+const search = (products, searchTerm) => products.filter(product => product.title.includes(`${searchTerm}`)
+|| product.description.includes(`${searchTerm}`))
+
+
+const loadSearch = (form, productsDivId) =>{
+  const productsDiv =document.querySelector(productsDivId)
+  const inputSearch = form.querySelector('#inputSearch')
+ 
+  form.addEventListener('submit', (e) => {
+    e.preventDefault()
+    if (inputSearch.value !=''){
+
+       productsDiv.querySelectorAll('.prato').forEach(prato => {
+         prato.remove()
+      })
+
+      const results = search(produtos, inputSearch.value)
+      results.forEach(produto  =>{
+
+        const html = `
+          <article class="prato">
+          <img src="${produto.image}" alt="${produto.title}">
+          <h4>${produto.title}</h4>
+          <h4>R$ ${produto.value}</h4>
+          <p>${produto.description}</p>
+          <button type="button" onclick ="modalTrigger(${produto.id})">Quero esse prato</button>
+        </article>  
+        `
+        productsDiv.insertAdjacentHTML('beforeend', html)
+       })
+
+    }
+ })
+
+}
+
+
 loadProducts(produtos, '#product-div')
 checkout(5598982298902)
+loadSearch(document.querySelector('#formSearch'), '#product-div')
